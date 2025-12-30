@@ -17,7 +17,6 @@ export class UsersService {
     this.logger.log(`Starting registration for ${email}...`);
 
     await this.db.transaction(async (tx) => {
-
       const [user] = await tx.insert(users).values({ email }).returning();
 
       this.logger.log(`User ${user.id} saved in transaction (pending commit).`);

@@ -126,6 +126,30 @@ export class UsersService {
 }
 ```
 
+## 🛡 Transactional Safety (Outbox Pattern)
+Achieve full data consistency by committing your business data (e.g., users table) and your queue job in a single database transaction. If the transaction rolls back, the job is never scheduled.
+
+Supported ORMs: TypeORM, Drizzle (via adapter).
+
+Example (TypeORM):
+
+```TypeScript
+await this.dataSource.transaction(async (manager) => {
+// 1. Save User (using manager)
+  const user = await manager.save(User, {email: 'test@example.com'});
+
+// 2. Schedule Job (passing the transaction manager as connection)
+  await this.queue.add(
+    'send-welcome',
+    {userId: user.id},
+    {connection: manager} // <--- Atomicity guaranteed
+  );
+});
+```
+
+Check the `examples` folder for full implementations with Drizzle ORM and TypeORM.
+
+
 ## ⚙️ Configuration & Features
 ### Metadata & Observability (Automatic Headers)
 
