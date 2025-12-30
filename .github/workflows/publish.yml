@@ -23,10 +23,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
-      - run: node -v && npm -v && pnpm -v
-
-      - run: pnpm install --frozen-lockfile
+      - run: npm i -g npm@latest
+      - run: pnpm install
       - run: pnpm --filter nestjs-pgmq build
 
-
-      - run: pnpm --filter nestjs-pgmq publish --no-git-checks --access public
+      - run: npm publish --provenance --access public
+        working-directory: packages/nestjs-pgmq
