@@ -12,7 +12,7 @@
     "email": "piotr@wodzinski.org"
   },
   "scripts": {
-    "build": "nest build",
+    "build": "tsc",
     "test": "jest",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
@@ -40,7 +40,7 @@
     "pg": "^8.0.0",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.1.3"
   },
   "publishConfig": {
     "access": "public",
