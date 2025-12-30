@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import * as os from 'node:os';
 import { randomUUID } from 'crypto';
+import { PgmqAddOptions } from './pgmq.interfaces';
 
 @Injectable()
 export class PgmqQueue {
@@ -11,9 +12,10 @@ export class PgmqQueue {
   ) {}
   private readonly producerId = `${os.hostname()}-${process.pid}`;
 
-  async add(jobName: string, data: any, customHeaders?: Record<string, any>) {
+  async add(jobName: string, data: any, options?: PgmqAddOptions) {
     const payload = { jobName, data };
-
+    const customHeaders = options?.headers;
+    const runner = options?.connection || this.pool;
     const systemHeaders = {
       messageId: randomUUID(),
       correlationId: customHeaders?.correlationId || randomUUID(),
@@ -22,10 +24,11 @@ export class PgmqQueue {
       createdAt: new Date().toISOString(),
       ...customHeaders,
     };
+    const delay = options?.delay || 0;
 
-    await this.pool.query(
-      `SELECT * FROM pgmq.send($1::text, $2::jsonb, $3::jsonb)`,
-      [this.queueName, payload, systemHeaders],
+    await runner.query(
+      `SELECT * FROM pgmq.send($1::text, $2::jsonb, $3::jsonb, $4::int)`,
+      [this.queueName, payload, systemHeaders, delay],
     );
   }
 }
