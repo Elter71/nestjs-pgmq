@@ -40,8 +40,6 @@ export interface PgmqJobHeaders {
   [key: string]: any;
 }
 
-
-
 export interface PgmqAddOptions {
   delay?: number;
   headers?: Record<string, any>;
@@ -51,4 +49,3 @@ export interface PgmqAddOptions {
 export interface PgConnection {
   query(text: string, params?: any[]): Promise<any>;
 }
-
