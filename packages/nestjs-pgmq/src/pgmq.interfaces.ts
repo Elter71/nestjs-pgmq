@@ -39,3 +39,16 @@ export interface PgmqJobHeaders {
   createdAt: string;
   [key: string]: any;
 }
+
+
+
+export interface PgmqAddOptions {
+  delay?: number;
+  headers?: Record<string, any>;
+  connection?: PgConnection;
+}
+
+export interface PgConnection {
+  query(text: string, params?: any[]): Promise<any>;
+}
+
