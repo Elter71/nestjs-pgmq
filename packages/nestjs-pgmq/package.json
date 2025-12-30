@@ -45,5 +45,8 @@
   "publishConfig": {
     "access": "public",
     "provenance": true
+  },
+  "repository": {
+    "url": "https://github.com/Elter71/nestjs-pgmq"
   }
 }
