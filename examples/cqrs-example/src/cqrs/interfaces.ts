@@ -28,3 +28,23 @@ export interface HandlerInfo {
   queueName: string;
   handlerName: string;
 }
+
+/**
+ * Options for publishing events
+ */
+export interface PublishOptions {
+  /**
+   * Database connection/transaction manager to use for transactional publishing.
+   * Pass TypeORM EntityManager or Drizzle transaction to ensure event is sent
+   * in the same transaction as your database operations (outbox pattern).
+   *
+   * @example
+   * ```typescript
+   * await this.dataSource.transaction(async (manager) => {
+   *   await manager.save(user);
+   *   await this.eventBus.publish(new UserCreatedEvent(user.id), { connection: manager });
+   * });
+   * ```
+   */
+  connection?: any;
+}

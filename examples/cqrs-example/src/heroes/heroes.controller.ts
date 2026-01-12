@@ -1,5 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { HeroesService } from './heroes.service';
+
+interface CreateHeroDto {
+  name: string;
+}
 
 interface KillDragonDto {
   dragonId: string;
@@ -15,12 +19,20 @@ export class HeroesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.heroesService.findOne(id);
   }
 
+  @Post()
+  create(@Body() dto: CreateHeroDto) {
+    return this.heroesService.create(dto.name);
+  }
+
   @Post(':id/kill')
-  async killDragon(@Param('id') id: string, @Body() dto: KillDragonDto) {
+  killDragon(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: KillDragonDto,
+  ) {
     return this.heroesService.killDragon(id, dto.dragonId);
   }
 }
