@@ -95,13 +95,13 @@ Define a processor using `@Processor` and handle jobs using `@Process`.
 
 ```ts
 // src/notifications.processor.ts
-import { Processor, Process, Job } from 'nestjs-pgmq';
+import { Processor, Process, PgmqJob } from 'nestjs-pgmq';
 
 @Processor('notifications')
 export class NotificationsProcessor {
 
   @Process('send-email')
-  async handleEmail(job: Job<{ email: string; body: string }>) {
+  async handleEmail(job: PgmqJob<{ email: string; body: string }>) {
     console.log(`Sending email to ${job.data.email}...`);
 
     // If this throws, the job is retried

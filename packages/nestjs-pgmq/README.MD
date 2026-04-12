@@ -84,14 +84,13 @@ Define a class to handle jobs. Use `@Processor` for the queue name and `@Process
 
 ```TypeScript
 // src/notifications.processor.ts
-import {Processor, Process} from 'nestjs-pgmq';
-import {Job} from 'nestjs-pgmq';
+import {Processor, Process, PgmqJob} from 'nestjs-pgmq';
 
 @Processor('notifications')
 export class NotificationsProcessor {
 
   @Process('send-email')
-  async handleEmail(job: Job<{ email: string; body: string }>) {
+  async handleEmail(job: PgmqJob<{ email: string; body: string }>) {
     console.log(`Sending email to ${job.data.email}...`);
 
     // Perform your logic here.
