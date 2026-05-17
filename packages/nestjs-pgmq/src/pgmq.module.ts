@@ -22,12 +22,30 @@ export class PgmqModule {
       provide: PGMQ_CONNECTION,
       useFactory: async (opt: PgmqModuleOptions) => {
         const pool = new Pool(opt.connection);
+        const installExtension = opt.installExtension ?? true;
 
         try {
           const client = await pool.connect();
-          await client.query('CREATE EXTENSION IF NOT EXISTS pgmq CASCADE;');
-          client.release();
-          console.log('PGMQ extension initialized successfully');
+          try {
+            if (installExtension) {
+              await client.query(
+                'CREATE EXTENSION IF NOT EXISTS pgmq CASCADE;',
+              );
+              console.log('PGMQ extension initialized successfully');
+            } else {
+              const { rowCount } = await client.query(
+                `SELECT 1 FROM pg_namespace WHERE nspname = 'pgmq'`,
+              );
+              if (!rowCount) {
+                throw new Error(
+                  'PGMQ not found: schema "pgmq" is missing. Install it manually (see https://github.com/pgmq/pgmq/blob/main/INSTALLATION.md) or set installExtension: true.',
+                );
+              }
+              console.log('PGMQ verified successfully');
+            }
+          } finally {
+            client.release();
+          }
         } catch (e) {
           const error = e as Error;
           console.error('Failed to initialize PGMQ extension:', error.message);

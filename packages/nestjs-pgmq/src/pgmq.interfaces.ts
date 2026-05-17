@@ -3,6 +3,7 @@ import { PoolConfig } from 'pg';
 
 export interface PgmqModuleOptions {
   connection: PoolConfig;
+  installExtension?: boolean;
 }
 
 export interface PgmqModuleAsyncOptions extends Pick<
